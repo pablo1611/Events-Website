@@ -34,21 +34,27 @@ export default function Login() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
-        cache: 'no-store',
+        body: JSON.stringify({ 
+          email: email.trim(), 
+          password: password 
+        })
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || 'Login failed');
-        setErrorDetails(data.details || '');
-        throw new Error(data.error || 'Login failed');
+        setError(data?.error || 'Login failed');
+        setErrorDetails(data?.details || 'An unexpected error occurred');
+        return;
       }
 
-      const data = await response.json();
-      
+      if (!data || !data.user) {
+        setError('Login failed');
+        setErrorDetails('Invalid response from server');
+        return;
+      }
+
       // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
       
@@ -56,6 +62,8 @@ export default function Login() {
       router.push('/');
     } catch (error) {
       console.error('Login error:', error);
+      setError('Login failed');
+      setErrorDetails('Network error or server is unavailable');
     } finally {
       setIsLoading(false);
     }

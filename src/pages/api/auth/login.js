@@ -1,31 +1,35 @@
 import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 
-// Create a new client for each request
 const uri = "mongodb+srv://pablo161198:Pablo1998@cluster0.tz2ju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-
   // Handle preflight request
   if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.status(200).end();
     return;
   }
 
+  // Only allow POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).json({ 
+      error: 'Method not allowed',
+      allowedMethods: ['POST']
+    });
   }
 
   let client;
   try {
+    if (!req.body || !req.body.email || !req.body.password) {
+      return res.status(400).json({ 
+        error: 'Bad request',
+        details: 'Email and password are required'
+      });
+    }
+
     const { email, password } = req.body;
     console.log('Login attempt for:', email);
 
@@ -35,7 +39,6 @@ export default async function handler(req, res) {
     const database = client.db("eventsDB");
     const users = database.collection("users");
 
-    // Find user by email
     const user = await users.findOne({ email });
     console.log('User found:', user ? 'yes' : 'no');
 
@@ -46,7 +49,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Compare password with hashed password in DB
     const isValid = await bcrypt.compare(password, user.password);
     console.log('Password valid:', isValid);
 
@@ -57,7 +59,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Create a sanitized user object (without password)
     const sanitizedUser = {
       id: user._id,
       email: user.email,
@@ -69,7 +70,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Login error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message
+    });
   } finally {
     if (client) {
       await client.close();
