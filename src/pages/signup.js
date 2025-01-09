@@ -6,6 +6,13 @@ import { useRouter } from 'next/router';
 
 const geist = Geist({ subsets: ['latin'] });
 
+export async function getServerSideProps(context) {
+    // Perform server-side logic, like checking authentication or fetching required data
+    return {
+      props: {}, // Pass props to the component if necessary
+    };
+  }
+
 export default function Signup() {
   const router = useRouter();
   const [firstName, setFirstName] = useState('');
