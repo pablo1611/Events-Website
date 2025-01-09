@@ -34,22 +34,24 @@ export default function Login() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({ email, password }),
         cache: 'no-store',
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        setError(data.error);
+        const data = await response.json();
+        setError(data.error || 'Login failed');
         setErrorDetails(data.details || '');
-        throw new Error(data.error);
+        throw new Error(data.error || 'Login failed');
       }
 
+      const data = await response.json();
+      
       // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
-
+      
       // Redirect to home page
       router.push('/');
     } catch (error) {
