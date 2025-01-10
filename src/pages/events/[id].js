@@ -104,7 +104,7 @@ export default function EventDetails() {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <button
             onClick={() => router.back()}
             className={`mb-4 flex items-center text-sm ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
@@ -115,9 +115,9 @@ export default function EventDetails() {
             Back to Events
           </button>
           
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-2/3">
-              <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
+            <div className="lg:w-2/3">
+              <div className="relative h-48 sm:h-64 md:h-96 rounded-lg overflow-hidden">
                 <Image
                   src={event.imageUrl || '/academic-logo.svg'}
                   alt={event.title}
@@ -127,8 +127,8 @@ export default function EventDetails() {
               </div>
             </div>
             
-            <div className="md:w-1/3">
-              <h1 className={`${geist.className} text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <div className="lg:w-1/3">
+              <h1 className={`${geist.className} text-2xl sm:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 {event.title}
               </h1>
               
@@ -169,8 +169,8 @@ export default function EventDetails() {
             </div>
           </div>
           
-          <div className="w-full mt-8">
-            <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-6`}>
+          <div className="w-full mt-6 sm:mt-8">
+            <h3 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4 sm:mb-6`}>
               Reviews
             </h3>
             {event.reviews && event.reviews.length > 0 ? (

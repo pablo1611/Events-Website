@@ -149,11 +149,11 @@ export default function Home() {
                 width={40}
                 height={40}
               />
-              <h1 className={`ml-3 text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h1 className={`ml-3 text-lg sm:text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} hidden sm:block`}>
                 Academic Events
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Link
                 href="/calendar"
                 className={`p-2 rounded-lg ${
@@ -182,7 +182,7 @@ export default function Home() {
                   </svg>
                 )}
               </button>
-              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} hidden sm:inline`}>
                 Welcome, {user.firstName}!
               </span>
               <button
@@ -196,24 +196,24 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="text-center mb-12">
-            <h2 className={`${geist.className} text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+      <main className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+        <div className="sm:px-0">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className={`${geist.className} text-2xl sm:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 sm:mb-4`}>
               Welcome to Academic Events
             </h2>
-            <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className={`text-lg sm:text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Your platform for managing and discovering academic events.
             </p>
           </div>
 
           {/* Category Filter */}
-          <div className="mb-8 flex justify-center space-x-2">
+          <div className="mb-8 flex justify-center flex-wrap gap-2 px-2">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => handleCategoryChange(category)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center
+                className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors flex items-center
                   ${selectedCategory === category
                     ? 'bg-indigo-600 text-white'
                     : darkMode
@@ -222,7 +222,9 @@ export default function Home() {
                   } border`}
               >
                 {getCategoryIcon(category)}
-                <span className="ml-2">{category === 'all' ? 'All Events' : category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                <span className="ml-1 sm:ml-2">
+                  {category === 'all' ? 'All Events' : category.charAt(0).toUpperCase() + category.slice(1)}
+                </span>
               </button>
             ))}
           </div>
@@ -233,7 +235,7 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {events.map((event) => (
                   <Link 
                     href={`/events/${event._id}`} 

@@ -42,3 +42,38 @@ body {
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
+
+/* Add responsive font sizing */
+@responsive {
+  .text-mobile {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .text-tablet {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+/* Add smooth transitions for responsive changes */
+* {
+  transition: font-size 0.2s ease-in-out, padding 0.2s ease-in-out, margin 0.2s ease-in-out;
+}
+
+/* Optimize touch targets for mobile */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent content overflow on small screens */
+.text-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

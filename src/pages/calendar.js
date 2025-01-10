@@ -117,7 +117,7 @@ export default function Calendar() {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex justify-between items-center mb-8">
             <Link
               href="/"
@@ -162,7 +162,7 @@ export default function Calendar() {
             </button>
           </div>
 
-          <div className="grid grid-cols-7 gap-px">
+          <div className="grid grid-cols-7 gap-px text-xs sm:text-sm">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
               <div
                 key={day}
@@ -170,10 +170,12 @@ export default function Calendar() {
                   darkMode ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-700'
                 }`}
               >
-                {day}
+                {window.innerWidth < 640 ? day.charAt(0) : day}
               </div>
             ))}
-            {renderCalendar()}
+            <div className="h-16 sm:h-24 border border-gray-200">
+              {renderCalendar()}
+            </div>
           </div>
         </div>
       </div>
