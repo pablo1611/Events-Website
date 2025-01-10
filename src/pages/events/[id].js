@@ -7,6 +7,44 @@ import Link from 'next/link';
 
 const geist = Geist({ subsets: ['latin'] });
 
+const ReviewCard = ({ review, darkMode }) => {
+  const reviewDate = new Date(review.lectureDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  return (
+    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-6 shadow-md mb-4`}>
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            {review.reviewer}
+          </h4>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            {reviewDate}
+          </p>
+        </div>
+        <div className="flex">
+          {[...Array(5)].map((_, i) => (
+            <svg
+              key={i}
+              className={`w-5 h-5 ${i < (review.stars || 0) ? 'text-yellow-400' : 'text-gray-300'}`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
+        </div>
+      </div>
+      <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        {review.review}
+      </p>
+    </div>
+  );
+};
+
 export default function EventDetails() {
   const router = useRouter();
   const { id } = router.query;
@@ -129,6 +167,27 @@ export default function EventDetails() {
                 </Link>
               </div>
             </div>
+          </div>
+          
+          <div className="w-full mt-8">
+            <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-6`}>
+              Reviews
+            </h3>
+            {event.reviews && event.reviews.length > 0 ? (
+              <div className="space-y-4">
+                {event.reviews.map((review, index) => (
+                  <ReviewCard 
+                    key={index} 
+                    review={review} 
+                    darkMode={darkMode}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className={`text-center py-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                No reviews yet
+              </p>
+            )}
           </div>
         </div>
       </div>
