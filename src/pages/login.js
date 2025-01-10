@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Geist } from 'next/font/google';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTheme } from '../context/ThemeContext';
 
 const geist = Geist({ subsets: ['latin'] });
 
@@ -22,6 +23,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [errorDetails, setErrorDetails] = useState('');
+  const { darkMode } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,8 +73,8 @@ export default function Login() {
 
   return (
     <NoSsr>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
+      <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-50'}`}>
+        <div className={`max-w-md w-full space-y-8 p-10 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg`}>
           <div className="text-center">
             <div className="flex justify-center mb-4">
               <Image
