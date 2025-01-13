@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 
-const client = require("../dbHandler");
+const uri = "mongodb+srv://pablo161198:Pablo1998@cluster0.tz2ju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,7 +12,16 @@ export default async function handler(req, res) {
   try {
     const { firstName, lastName, email, password } = req.body;
 
-    
+    // Input validation
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        details: 'All fields are required'
+      });
+    }
+
+    // Initialize MongoDB client
+    client = new MongoClient(uri);
     await client.connect();
 
     const database = client.db("eventsDB");
@@ -36,7 +45,8 @@ export default async function handler(req, res) {
       firstName,
       lastName,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      createdAt: new Date()
     };
 
     const result = await users.insertOne(newUser);
@@ -48,7 +58,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Signup error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
   } finally {
     if (client) {
       await client.close();
