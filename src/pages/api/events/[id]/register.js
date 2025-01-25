@@ -1,4 +1,4 @@
-import client from "../dbHandler/index"; // Import the centralized MongoDB client
+import client from "../../dbHandler/index"; // Import the centralized MongoDB client
 import { ObjectId } from "mongodb"; // Import ObjectId for MongoDB document IDs
 
 export default async function handler(req, res) {
