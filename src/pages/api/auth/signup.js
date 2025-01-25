@@ -1,14 +1,12 @@
-import { MongoClient } from "mongodb";
-import bcrypt from "bcryptjs";
-
-const uri = "mongodb+srv://pablo161198:Pablo1998@cluster0.tz2ju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+import client from "../dbhandler/index"; // Import the centralized MongoDB client
+import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
 
 export default async function handler(req, res) {
+  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let client;
   try {
     const { firstName, lastName, email, password } = req.body;
 
@@ -20,14 +18,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // Initialize MongoDB client
-    client = new MongoClient(uri);
-    await client.connect();
+    // Connect to the database using the centralized client
+    await client.connect(); // Ensure connection to MongoDB
+    const database = client.db("eventsDB"); // Access the database
+    const users = database.collection("users"); // Access the users collection
 
-    const database = client.db("eventsDB");
-    const users = database.collection("users");
-
-    // Check if user already exists
+    // Check if the user already exists
     const existingUser = await users.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ 
@@ -37,34 +33,38 @@ export default async function handler(req, res) {
     }
 
     // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10); // Generate salt for hashing
+    const hashedPassword = await bcrypt.hash(password, salt); // Hash the password
 
-    // Create new user
+    // Create the new user object
     const newUser = {
       firstName,
       lastName,
       email,
-      password: hashedPassword,
-      createdAt: new Date()
+      password: hashedPassword, // Store hashed password
+      createdAt: new Date() // Add the creation date
     };
 
+    // Insert the new user into the database
     const result = await users.insertOne(newUser);
 
+    // Return a success response with the inserted user's ID
     return res.status(201).json({ 
       message: 'User created successfully',
       userId: result.insertedId 
     });
 
   } catch (error) {
+    // Log and handle any server-side errors
     console.error('Signup error:', error);
     return res.status(500).json({ 
       error: 'Internal server error',
       details: error.message 
     });
   } finally {
+    // Close the database connection to avoid memory leaks
     if (client) {
       await client.close();
     }
   }
-} 
+}
