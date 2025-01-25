@@ -1,16 +1,16 @@
-import client from "../dbhandler/index"; // Import the centralized MongoDB client
-import bcrypt from "bcryptjs"; // Import bcrypt for password comparison
+import client from "../dbHandler/index"; // Import the centralized MongoDB client
+import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
 
 export default async function handler(req, res) {
   // Handle preflight request (CORS)
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // Allow only POST and OPTIONS
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow specific headers
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // Allow POST and OPTIONS methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Specify allowed headers
     res.status(200).end(); // End the preflight response
     return;
   }
 
-  // Allow only POST requests
+  // Only allow POST requests
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']); // Inform the client that only POST is allowed
     return res.status(405).json({ 
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Validate the request body
+    // Validate request body
     if (!req.body || !req.body.email || !req.body.password) {
       return res.status(400).json({ 
         error: 'Bad request',
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
     // Find the user by email
     const user = await users.findOne({ email });
-    console.log('User found:', user ? 'yes' : 'no'); // Log if the user exists or not
+    console.log('User found:', user ? 'yes' : 'no'); // Log if the user exists
 
     if (!user) {
       return res.status(401).json({ 
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Sanitize the user object by removing sensitive data
+    // Sanitize the user object to exclude sensitive data
     const sanitizedUser = {
       id: user._id,
       email: user.email,
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
       details: error.message
     });
   } finally {
-    // Close the database connection to avoid memory leaks
+    // Ensure the database connection is closed properly
     if (client) {
       await client.close();
     }

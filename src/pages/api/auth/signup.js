@@ -1,4 +1,4 @@
-import client from "../dbhandler/index"; // Import the centralized MongoDB client
+import client from "../dbHandler/index"; // Import the centralized MongoDB client
 import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
 
 export default async function handler(req, res) {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const database = client.db("eventsDB"); // Access the database
     const users = database.collection("users"); // Access the users collection
 
-    // Check if the user already exists
+    // Check if user already exists
     const existingUser = await users.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       lastName,
       email,
       password: hashedPassword, // Store hashed password
-      createdAt: new Date() // Add the creation date
+      createdAt: new Date() // Add creation date
     };
 
     // Insert the new user into the database
@@ -55,14 +55,14 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    // Log and handle any server-side errors
+    // Log the error and return a 500 status
     console.error('Signup error:', error);
     return res.status(500).json({ 
       error: 'Internal server error',
       details: error.message 
     });
   } finally {
-    // Close the database connection to avoid memory leaks
+    // Ensure the database connection is closed properly
     if (client) {
       await client.close();
     }
