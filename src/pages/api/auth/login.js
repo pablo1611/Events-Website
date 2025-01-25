@@ -1,8 +1,8 @@
 import client from "../dbhandler/index"; // Import the centralized MongoDB client
-import bcrypt from "bcryptjs"; // Import bcrypt for password hashing and comparison
+import bcrypt from "bcryptjs"; // Import bcrypt for password comparison
 
 export default async function handler(req, res) {
-  // Handle preflight requests (CORS)
+  // Handle preflight request (CORS)
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // Allow only POST and OPTIONS
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow specific headers
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Only allow POST requests
+  // Allow only POST requests
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']); // Inform the client that only POST is allowed
     return res.status(405).json({ 
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Validate request body
+    // Validate the request body
     if (!req.body || !req.body.email || !req.body.password) {
       return res.status(400).json({ 
         error: 'Bad request',
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Remove sensitive data before returning the user object
+    // Sanitize the user object by removing sensitive data
     const sanitizedUser = {
       id: user._id,
       email: user.email,
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       lastName: user.lastName
     };
 
-    // Return a successful response with the sanitized user data
+    // Return a success response with the sanitized user data
     return res.status(200).json({ user: sanitizedUser });
 
   } catch (error) {
