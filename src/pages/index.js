@@ -21,6 +21,7 @@ export default function Home() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [categories, setCategories] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -70,6 +71,7 @@ export default function Home() {
   const handleCategoryChange = (category) => {
     setIsLoading(true);
     fetchEvents(1, category);
+    setIsMenuOpen(false);
   };
 
   const handleLogout = () => {
@@ -207,8 +209,21 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Hamburger Menu Button */}
+          <div className="flex justify-center mb-4 sm:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-600'}`}
+              aria-label="Toggle category menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            </button>
+          </div>
+
           {/* Category Filter */}
-          <div className="mb-8 flex justify-center flex-wrap gap-2 px-2">
+          <div className={`mb-8 flex justify-center flex-wrap gap-2 px-2 ${isMenuOpen ? 'block' : 'hidden'} sm:flex`}>
             {categories.map((category) => (
               <button
                 key={category}

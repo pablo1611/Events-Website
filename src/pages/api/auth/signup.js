@@ -1,4 +1,4 @@
-import client from "../dbHandler/index"; // Import the centralized MongoDB client
+import clientPromise from "../dbHandler/index"; // Use the centralized MongoDB client
 import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
 
 export default async function handler(req, res) {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     }
 
     // Connect to the database using the centralized client
-    await client.connect(); // Ensure connection to MongoDB
+    const client = await clientPromise;
     const database = client.db("eventsDB"); // Access the database
     const users = database.collection("users"); // Access the users collection
 
@@ -61,10 +61,5 @@ export default async function handler(req, res) {
       error: 'Internal server error',
       details: error.message 
     });
-  } finally {
-    // Ensure the database connection is closed properly
-    if (client) {
-      await client.close();
-    }
   }
 }
